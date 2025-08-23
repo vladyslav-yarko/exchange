@@ -25,3 +25,21 @@ dependencies = [
     "uvicorn>=0.35.0",
     "websockets>=15.0.1",
 ]
+
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle (PEP 8 style issues like spacing, indentation)
+    "F",  # pyflakes (undefined variables, unused imports, etc.)
+    "B",  # flake8-bugbear (likely bugs, dangerous patterns)
+    "W",  # pycodestyle warnings (minor style warnings)
+    "C",  # mccabe (complexity checker — too complex functions)
+    "N",  # pep8-naming (enforces correct naming conventions)
+    "A",  # flake8-builtins (avoid shadowing Python built-ins like `list`, `id`, etc.)
+    "PT", # pytest-style – checks specific to pytest
+    "I"  # isort – import sorting
+]
+ignore = ["E501"] # ignore line-too-long, if you want
