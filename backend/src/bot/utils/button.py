@@ -21,3 +21,9 @@ class UrlButton(Button):
         self.text = text
         self.url = url
         self.button = InlineKeyboardButton(text=self.text, url=self.url)
+
+
+class ContactButton(Button):
+    def __init__(self, text: str):
+        self.text = text
+        self.button = KeyboardButton(text=self.text, request_contact=True)
