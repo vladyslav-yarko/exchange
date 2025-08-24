@@ -124,3 +124,26 @@ class SQLAlchemyRepository(Repository):
         smtp = delete(self.model).where(self.model.id == id)
         await self.session.execute(smtp)
         return obj
+
+
+def transaction(func):
+    @wraps(func)
+    async def wrapper(self, *args, **kwargs):
+        result = None
+        rollback_needed = False
+        try:
+            result = await func(self, *args, **kwargs)
+            if isinstance(result, tuple):
+                rollback_needed = True
+            return result
+        except Exception as e:
+            await self.session.rollback()
+            logger.critical("DATABASE ERROR")
+            logger.critical(str(e))
+            raise ValueError("DATABASE ERROR")
+        finally:
+            if rollback_needed:
+                await self.session.rollback()
+            else:
+                await self.session.commit()
+    return wrapper
