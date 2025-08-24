@@ -12,3 +12,8 @@ class Keyboard(ABC):
     @abstractmethod
     def keyboard(self):
         pass
+
+
+class InlineKeyboard(Keyboard):
+    def keyboard(self):
+        return InlineKeyboardMarkup(inline_keyboard=self.buttons)
