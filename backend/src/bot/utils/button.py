@@ -14,3 +14,10 @@ class CallbackButton(Button):
         self.text = text
         self.callback = callback
         self.button = InlineKeyboardButton(text=self.text, callback_data=self.callback)
+
+
+class UrlButton(Button):
+    def __init__(self, text: str, url: str):
+        self.text = text
+        self.url = url
+        self.button = InlineKeyboardButton(text=self.text, url=self.url)
