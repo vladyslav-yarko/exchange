@@ -8,7 +8,13 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from backend.src.models import (
-    Base
+    Base, 
+    User, 
+    TelegramUser, 
+    Crypto,
+    CryptoSubscribe,
+    Currency,
+    CurrencySubscribe
 )
 from backend.src.config import settings
 
