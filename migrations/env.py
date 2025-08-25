@@ -7,6 +7,11 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
+
 from backend.src.models import (
     Base, 
     User, 
