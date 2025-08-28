@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Github
+    url: https://github.com/vladyslav-yarko/
+    about: My main Github
+  - name: Linkedin
+    url: https://www.linkedin.com/in/vladyslav-yarko/
+    about: My Linkedin

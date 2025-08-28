@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite it as below."
+authors:
+  - family-names: Yarko
+    given-names: Vladyslav
+title: "exchange"
+version: 1.0.0
+date-released: 2025-08-23
+url: "https://github.com/vladyslav-yarko/exchange"
+license: "MIT"
