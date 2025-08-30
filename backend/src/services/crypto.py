@@ -65,3 +65,9 @@ class CryptoService(Service):
     @transaction
     async def delete_one(self, id: Union[int, uuid.UUID]) -> Union[dict, tuple[int, str]]:
         return await super().delete_one(id)
+    
+    async def get_subscribe_one(self, user_id: Union[int, uuid.UUID], symbol: str) -> Union[dict, tuple[int, str]]:
+        subscribe = await self.crypto_subscribes_repo(self.session).get_one_by_id_symbol(user_id, symbol)
+        if not subscribe:
+            return (422, "Symbols combination has not found")
+        return subscribe
