@@ -25,3 +25,20 @@ class CurrencyService(Service):
         self.currency_subscribes_repo = currency_subscribes_repo
         self.user_repo = user_repo
         self.client = currency_client
+        
+    @http_session
+    async def get_price(self, data: CurrencyPriceBody) -> Union[dict, tuple[int, str]]:
+        symbol1 = data.get("symbol1")
+        symbol2 = data.get("symbol2")
+        symbol = symbol1 + symbol2
+        symbol_data = await self.currency_repo(self.session).get_one_by_symbol(symbol)
+        if not symbol_data:
+            return (422, "Symbol combination has not found")
+        client_data = await self.client.get_symbol_price(symbol1, symbol2)
+        if not client_data:
+            return (422, "Symbol combination has not found")
+        data = dict()
+        data["symbol"] = symbol
+        price = float(client_data.get('quotes').get(symbol))
+        data["price"] = format_decimal(price)        
+        return data
