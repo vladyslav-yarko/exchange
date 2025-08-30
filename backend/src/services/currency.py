@@ -76,3 +76,9 @@ class CurrencyService(Service):
         data = await super().get(page, userId=user_id)
         self.repo = self.currency_repo
         return data   
+    
+    async def subscribe_get_one(self, user_id: Union[int, uuid.UUID], symbol: str) -> dict:
+        subscribe = await self.get_subscribe_one(user_id, symbol)
+        if isinstance(subscribe, tuple):
+            return subscribe
+        return subscribe.to_dict()
