@@ -83,3 +83,20 @@ class CryptoService(Service):
         if isinstance(subscribe, tuple):
             return subscribe
         return subscribe.to_dict()
+    
+    @transaction
+    async def subscribe_create_one(self, user_id: Union[int, uuid.UUID], data: CryptoSubscribeBody) -> Union[dict, tuple[int, str]]:
+        symbol = data.get("symbol1") + data.get('symbol2')
+        symbol_data = await self.crypto_repo(self.session).get_one_by_symbol(symbol)
+        if not symbol_data:
+            return (422, "Symbols combination has not found")
+        d = await self.crypto_subscribes_repo(self.session).get_one_by_id_symbol(user_id, symbol)
+        if d:
+            return (422, "Symbols combination has already found")
+        data['symbol'] = symbol
+        data['userId'] = user_id
+        data['symbolId'] = symbol_data.id
+        self.repo = self.crypto_subscribes_repo
+        data = await super().create_one(data)
+        self.repo = self.crypto_repo
+        return data   
