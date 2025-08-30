@@ -116,3 +116,11 @@ class CurrencyService(Service):
         data['symbolId'] = symbol_data.id
         subscribe = await self.currency_subscribes_repo(self.session).update_one(subscribe.id, **data)
         return subscribe.to_dict()
+    
+    @transaction
+    async def subscribe_delete_one(self, user_id: Union[int, uuid.UUID], symbol: str) -> Union[dict, tuple[int, str]]:
+        subscribe = await self.get_subscribe_one(user_id, symbol)
+        if isinstance(subscribe, tuple):
+            return subscribe
+        subscribe = await self.currency_subscribes_repo(self.session).delete_one(subscribe.id)
+        return subscribe.to_dict()
