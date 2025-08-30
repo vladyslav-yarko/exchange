@@ -42,3 +42,12 @@ class CurrencyService(Service):
         price = float(client_data.get('quotes').get(symbol))
         data["price"] = format_decimal(price)        
         return data
+            
+    @transaction
+    async def create_one(self, data: CurrencyBody) -> Union[dict, tuple[int, str]]:
+        symbol = data.get("symbol1") + data.get('symbol2')
+        d = await self.currency_repo(self.session).get_one_by_symbol(symbol)
+        if d:
+            return (422, "Symbols combination has already found")
+        data['symbol'] = symbol
+        return await super().create_one(data)
