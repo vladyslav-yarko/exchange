@@ -99,3 +99,20 @@ class CurrencyService(Service):
         data = await super().create_one(data)
         self.repo = self.currency_repo
         return data   
+    
+    @transaction
+    async def subscribe_update_one(self, user_id: Union[int, uuid.UUID], symbol: str, data: CurrencySubscribeBody) -> Union[dict, tuple[int, str]]:
+        new_symbol = data.get("symbol1") + data.get('symbol2')
+        symbol_data = await self.currency_repo(self.session).get_one_by_symbol(new_symbol)
+        if not symbol_data:
+            return (422, "Symbols combination has not found")
+        subscribe = await self.get_subscribe_one(user_id, symbol)
+        if isinstance(subscribe, tuple):
+            return subscribe
+        d = await self.currency_subscribes_repo(self.session).get_one_by_id_symbol(user_id, new_symbol)
+        if d:
+            return (422, "Symbols combination has already found")
+        data['symbol'] = new_symbol
+        data['symbolId'] = symbol_data.id
+        subscribe = await self.currency_subscribes_repo(self.session).update_one(subscribe.id, **data)
+        return subscribe.to_dict()
