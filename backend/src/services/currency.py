@@ -70,3 +70,9 @@ class CurrencyService(Service):
         if not subscribe:
             return (422, "Symbols combination has not found")
         return subscribe
+    
+    async def subscribes_get(self, user_id: Union[int, uuid.UUID], page: Optional[int] = None) -> dict:
+        self.repo = self.currency_subscribes_repo
+        data = await super().get(page, userId=user_id)
+        self.repo = self.currency_repo
+        return data   
