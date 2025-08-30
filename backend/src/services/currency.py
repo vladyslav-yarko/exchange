@@ -51,3 +51,12 @@ class CurrencyService(Service):
             return (422, "Symbols combination has already found")
         data['symbol'] = symbol
         return await super().create_one(data)
+    
+    @transaction
+    async def update_one(self, id: Union[int, uuid.UUID], data: CurrencyBody) -> Union[dict, tuple[int, str]]:
+        symbol = data.get("symbol1") + data.get('symbol2')
+        d = await self.currency_repo(self.session).get_one_by_symbol(symbol)
+        if d:
+            return (422, "Symbols combination has already found")
+        data['symbol'] = symbol
+        return await super().update_one(id, data)
