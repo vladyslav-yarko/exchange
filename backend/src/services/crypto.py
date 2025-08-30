@@ -61,3 +61,7 @@ class CryptoService(Service):
             return (422, "Symbols combination has already found")
         data['symbol'] = symbol
         return await super().update_one(id, data)
+    
+    @transaction
+    async def delete_one(self, id: Union[int, uuid.UUID]) -> Union[dict, tuple[int, str]]:
+        return await super().delete_one(id)
