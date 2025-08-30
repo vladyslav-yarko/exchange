@@ -26,3 +26,20 @@ class CryptoService(Service):
         self.crypto_subscribes_repo = crypto_subscribes_repo
         self.user_repo = user_repo
         self.client = crypto_client
+        
+    @http_session
+    async def get_price(self, data: CryptoPriceBody) -> Union[dict, tuple[int, str]]:
+        symbol1 = data.get("symbol1")
+        symbol2 = data.get("symbol2")
+        symbol = symbol1 + symbol2
+        symbol_data = await self.crypto_repo(self.session).get_one_by_symbol(symbol)
+        if not symbol_data:
+            return (422, "Symbol combination has not found")
+        client_data = await self.client.get_symbol_price(symbol)
+        if not client_data:
+            return (422, "Symbol combination has not found")
+        data = dict()
+        data["symbol"] = symbol
+        price = float(client_data.get("price"))
+        data["price"] = format_decimal(price)  
+        return data
