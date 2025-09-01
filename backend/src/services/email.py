@@ -56,3 +56,15 @@ class EmailService(Service):
             "email": email,
             "verified": True
         }
+    
+    async def is_verified(self, data: IsVerifiedEmailBody) -> Union[bool, tuple[int, str]]:
+        email = data.get("email")
+        data = await self.redis_manager.get_string_data(f"verified-email:{email}")
+        if not data:
+            return (400, "Email is not verified")
+        if data != email:
+            return (400, "Email is not verified")
+        return {
+            "verified": True,
+            "email": email
+        }
