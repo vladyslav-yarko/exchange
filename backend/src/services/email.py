@@ -21,3 +21,19 @@ class EmailService(Service):
         self.user_repo = user_repo
         self.code_manager = code_manager
         self.email_manager = email_manager
+        
+    async def send(self, data: EmailBody) -> Union[list[dict, str], tuple[int, str]]:
+        email = data.get('email')
+        # user = await self.user_repo(self.session).get_one_by_email(email)
+        # if user:
+        #     return (422, "Email has already found")
+        code = code_manager.make_code()
+        id = str(uuid.uuid4())
+        await self.redis_manager.set_string_data(f"email-{id}:{email}", str(code), ValidationEnum.EXPIRE_TIME.value)
+        # CELERY
+        try:
+            await self.email_manager.send_verification(email, code)
+        except Exception:
+            return (422, "Cannot send verification code. Email is invalid")
+        data["expirationTime"] = ValidationEnum.EXPIRE_TIME
+        return [data, id]
