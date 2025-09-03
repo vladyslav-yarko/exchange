@@ -132,3 +132,14 @@ class UserService(Service):
         # await self.redis_manager.set_string_data(f"{token_id}:{user.id}", refresh_token, TokenEnum.REFRESH_TOKEN_EXP.value)
         await self.redis_manager.set_string_data(f"{token_id}", refresh_token, TokenEnum.REFRESH_TOKEN_EXP.value)
         return data
+    
+    async def logout_user(self, token_id: str) -> Union[dict, tuple[int, str]]:
+        token = await self.redis_manager.get_string_data(token_id)
+        if not token:
+            return (400, "Token id or user id has not found")
+        payload = self.jwt.validate_token(token)
+        if not payload:
+            return (400, "User is not authenticated. Refresh token has not found")
+        user = await self.user_repo(self.session).get_one_by_id(payload.get("sub"))
+        await self.redis_manager.delete(token_id)
+        return user.to_dict() if user else None
