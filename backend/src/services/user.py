@@ -109,3 +109,26 @@ class UserService(Service):
         data["tokenId"] = token_id
         await self.redis_manager.set_string_data(f"{token_id}", refresh_token, TokenEnum.REFRESH_TOKEN_EXP.value)
         return data
+    
+    async def login_user(self, data: LoginUserBody) -> Union[dict, tuple[int, str]]:
+        user = await self.user_repo(self.session).get_one_by_username(data.get("username"))
+        if not user:
+            return (422, "Username has not found")
+        user = await self.user_repo(self.session).get_one_by_email(data.get("email"))
+        if not user:
+            return (422, "Email has not found")
+        if isinstance(user, tuple):
+            return user
+        if not user.password:
+            return (422, "User was authenticated via oauth 2.0")
+        is_correct_pw = self.pw.check_password(data.get("password"), user.password)
+        if not is_correct_pw:
+            return (422, "Incorrect password")
+        refresh_token = await self.issue_refresh_token(user.id, user.role)
+        data = dict()
+        token_id = str(uuid.uuid4())
+        data["user"] = user
+        data["tokenId"] = token_id
+        # await self.redis_manager.set_string_data(f"{token_id}:{user.id}", refresh_token, TokenEnum.REFRESH_TOKEN_EXP.value)
+        await self.redis_manager.set_string_data(f"{token_id}", refresh_token, TokenEnum.REFRESH_TOKEN_EXP.value)
+        return data
