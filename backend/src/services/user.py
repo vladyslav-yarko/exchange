@@ -72,3 +72,7 @@ class UserService(Service):
         #     if telegram_user: 
         #         await self.telegram_user_repo(self.session).update_one(telegram_user.id, userId=None)
         return data
+    
+    async def issue_refresh_token(self, id: int, role: RoleEnum, exp: Optional[int] = None) -> str:
+        token = self.jwt.create_refresh_token(str(id), role, exp)
+        return token
