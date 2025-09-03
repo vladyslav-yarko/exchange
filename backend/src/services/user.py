@@ -76,3 +76,7 @@ class UserService(Service):
     async def issue_refresh_token(self, id: int, role: RoleEnum, exp: Optional[int] = None) -> str:
         token = self.jwt.create_refresh_token(str(id), role, exp)
         return token
+    
+    async def issue_access_token(self, id: int, role: RoleEnum) -> str:
+        token = self.jwt.create_access_token(str(id), role)
+        return token
