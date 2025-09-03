@@ -84,3 +84,28 @@ class UserService(Service):
     async def google_url(self) -> str:
         redirect_uri = self.oauth_manager.google_url_redirect()
         return redirect_uri
+    
+    @http_session
+    @transaction
+    async def google_callback(self, code: str) -> Union[dict, tuple[int, str]]:
+        oauth2_data = await self.client.get_google_data(code)
+        if not oauth2_data:
+            return (422, "Invalid google code has sent")
+        id_token = oauth2_data.get("id_token")
+        oauth2_user_data = self.jwt.decode_oauth2_token(id_token)
+        email = oauth2_user_data.get("email")
+        user = await self.user_repo(self.session).get_one_by_email(email)
+        if not user:
+            user_data = dict()
+            user_data["email"] = email
+            user_data["username"] = email.split("@")[0] + "@"
+            user = await super().create_one(user_data)
+        else:
+            user = user.to_dict()
+        refresh_token = await self.issue_refresh_token(user.get("id"), user.get("role"))
+        data = dict()
+        token_id = str(uuid.uuid4())
+        data["user"] = user
+        data["tokenId"] = token_id
+        await self.redis_manager.set_string_data(f"{token_id}", refresh_token, TokenEnum.REFRESH_TOKEN_EXP.value)
+        return data
