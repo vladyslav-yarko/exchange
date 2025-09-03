@@ -80,3 +80,7 @@ class UserService(Service):
     async def issue_access_token(self, id: int, role: RoleEnum) -> str:
         token = self.jwt.create_access_token(str(id), role)
         return token
+    
+    async def google_url(self) -> str:
+        redirect_uri = self.oauth_manager.google_url_redirect()
+        return redirect_uri
