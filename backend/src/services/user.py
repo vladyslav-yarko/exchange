@@ -30,3 +30,15 @@ class UserService(Service):
         self.pw = pw_manager
         self.oauth_manager = oauth2
         self.client = oauth2_client
+    
+    @transaction
+    async def create_one(self, data: UserBody) -> Union[dict, tuple[int, str]]:
+        user = await self.user_repo(self.session).get_one_by_username(data.get('username'))
+        if user:
+            return (422, "Username has already found")
+        user = await self.user_repo(self.session).get_one_by_email(data.get("email"))
+        if user:
+            return (422, "Email has already found")
+        password = self.pw.hash_password(data.get('password'))
+        data["password"] = password
+        return await super().create_one(data)
