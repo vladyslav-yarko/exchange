@@ -60,3 +60,15 @@ class UserService(Service):
         if phone_number is not None:
             await self.telegram_user_repo(self.session).update_one_by_phone_number(phone_number, userId=id)
         return await super().update_one(id, final_data)
+    
+    @transaction
+    async def delete_one(self, id: Union[int, uuid.UUID]) -> Union[dict, tuple[int, str]]:
+        data = await super().delete_one(id)
+        if isinstance(data, tuple):
+            return data
+        # phone_number = data.get("phoneNumber")
+        # if phone_number is not None:
+        #     telegram_user = await self.telegram_user_repo(self.session).get_one_by_phone_number(phone_number)
+        #     if telegram_user: 
+        #         await self.telegram_user_repo(self.session).update_one(telegram_user.id, userId=None)
+        return data
