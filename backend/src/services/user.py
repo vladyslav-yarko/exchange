@@ -143,3 +143,30 @@ class UserService(Service):
         user = await self.user_repo(self.session).get_one_by_id(payload.get("sub"))
         await self.redis_manager.delete(token_id)
         return user.to_dict() if user else None
+    
+    async def refresh_user(
+        self, 
+        token_id: Union[str, uuid.UUID]) -> Union[str, tuple[int, str]]:
+        # full_id = f"{token_id}:{user_id}"
+        token = await self.redis_manager.get_string_data(token_id)
+        if not token:
+            return (400, "Token id or user id has not found")
+        payload = self.jwt.validate_token(token)
+        if not payload:
+            return (400, "User is not authenticated. Refresh token has not found")
+        user = await self.user_repo(self.session).get_one_by_id(int(payload.get("sub")))
+        if not user:
+            return (400, "Token id or user id has not found")
+        new_token_id = str(uuid.uuid4())
+        expiration_time = payload.get('exp')
+        # await self.redis_manager.delete(full_id)
+        await self.redis_manager.delete(token_id)
+        # await self.redis_manager.set_string_data(f"{token_id}:{user_id}", token, expiration_time)
+        await self.redis_manager.set_string_data(f"{new_token_id}", token, expiration_time)
+        access_token = await self.issue_access_token(payload["sub"], payload["role"])
+        data = {
+            "accessToken": access_token,
+            "exp": expiration_time,
+            "tokenId": new_token_id
+        }
+        return data
