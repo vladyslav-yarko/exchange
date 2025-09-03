@@ -42,3 +42,21 @@ class UserService(Service):
         password = self.pw.hash_password(data.get('password'))
         data["password"] = password
         return await super().create_one(data)
+    
+    @transaction
+    async def update_one(self, id: Union[int, uuid.UUID], data: UpdateUserBody) -> Union[dict, tuple[int, str]]:
+        final_data = dict()
+        for key, value in data.items():
+            if key != "password" and key != "email" and value is not None:
+                user = await self.user_repo(self.session).get_one(**{key: value})
+                if user:
+                    return (422, f"{key} has already found")
+                final_data[key] = value
+        pw = data.get("password")
+        if pw is not None:
+            password = self.pw.hash_password(pw)
+            final_data["password"] = password
+        phone_number = data.get("phoneNumber")
+        if phone_number is not None:
+            await self.telegram_user_repo(self.session).update_one_by_phone_number(phone_number, userId=id)
+        return await super().update_one(id, final_data)
