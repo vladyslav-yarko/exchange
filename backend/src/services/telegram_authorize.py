@@ -15,3 +15,7 @@ class TelegramAuthorizeService(Service):
         super().__init__(session)
         self.telegram_user_repo = telegram_user_repo
         self.repo = telegram_user_repo
+        
+    async def get_one(self, chat_id: int, phone_number: str) -> Optional[dict]:
+        data = await self.telegram_user_repo(self.session).get_one_by_chat_id_phone_number(chat_id, phone_number)
+        return data.to_dict() if data else None
