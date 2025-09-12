@@ -56,3 +56,15 @@ class PhoneNumberService(Service):
             "phoneNumber": phone_number,
             "verified": True
         }
+    
+    async def is_verified(self, user_id: int, data: IsVerifiedPhoneNumberBody) -> Union[dict, tuple[int, str]]:
+        phone_number = data.get("phoneNumber")
+        data = await self.redis_manager.get_string_data(f"verified-phone:{user_id}")
+        if not data:
+            return (400, "Phone number is not verified")
+        if data != phone_number:
+            return (400, "Phone number is not verified")
+        return {
+            "verified": True,
+            "phoneNumber": phone_number
+        }
