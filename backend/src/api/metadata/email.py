@@ -18,4 +18,18 @@ async def service_dep(session: DBSession) -> EmailService:
 
 
 class EmailDependencyFactory(DependencyFactory):
-    pass
+    def __init__(self):
+        super().__init__(
+            service_dep=service_dep,
+        )
+        
+    def send_dep(self) -> Callable[[], Awaitable[EmailPublic]]:
+        async def dep(
+            response: Response,
+            body: EmailBody,
+            service: EmailService = Depends(self.service_dep)) -> EmailPublic:
+            data = await service.send(body.model_dump())
+            self.check_for_exception(data)
+            self.set_cookie(response, "email", data[1], ValidationEnum.EXPIRE_TIME.value) 
+            return EmailPublic(**data[0])
+        return dep
