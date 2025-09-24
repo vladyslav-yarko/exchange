@@ -59,3 +59,11 @@ class EmailDependencyFactory(DependencyFactory):
             response = IsVerifiedEmailPublic(**data)
             return response
         return dep
+            
+
+dependencies = EmailDependencyFactory()
+
+
+SentEmail = Annotated[EmailPublic, Depends(dependencies.send_dep())]
+ValidatedEmail = Annotated[ValidateEmailPublic, Depends(dependencies.validate_dep())]
+IsVerifiedEmail = Annotated[IsVerifiedEmailPublic, Depends(dependencies.is_verified_dep())]
