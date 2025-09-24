@@ -33,3 +33,19 @@ class EmailDependencyFactory(DependencyFactory):
             self.set_cookie(response, "email", data[1], ValidationEnum.EXPIRE_TIME.value) 
             return EmailPublic(**data[0])
         return dep
+    
+    def validate_dep(self) -> Callable[[], Awaitable[ValidateEmailPublic]]:
+        async def dep(
+            body: ValidateEmailBody,
+            service: EmailService = Depends(self.service_dep),
+            email: Optional[str] = Cookie(None, examples=[None], description="Validation id. (You do not need to pass it). 💫")) -> ValidateEmailPublic:
+            if not email:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Validation id has not found"
+                )
+            data = await service.validate(email, body.model_dump())
+            self.check_for_exception(data)
+            response = ValidateEmailPublic(**data)
+            return response
+        return dep
