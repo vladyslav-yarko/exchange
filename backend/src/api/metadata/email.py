@@ -15,3 +15,7 @@ async def service_dep(session: DBSession) -> EmailService:
         session=session,
         user_repo=UserRepository
     )
+
+
+class EmailDependencyFactory(DependencyFactory):
+    pass
