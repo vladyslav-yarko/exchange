@@ -49,3 +49,13 @@ class EmailDependencyFactory(DependencyFactory):
             response = ValidateEmailPublic(**data)
             return response
         return dep
+    
+    def is_verified_dep(self) -> Callable[[], Awaitable[IsVerifiedEmailPublic]]:
+        async def dep(
+            body: IsVerifiedEmailBody,
+            service: EmailService = Depends(self.service_dep)) -> IsVerifiedEmailPublic:
+            data = await service.is_verified(body.model_dump())
+            self.check_for_exception(data)
+            response = IsVerifiedEmailPublic(**data)
+            return response
+        return dep
