@@ -17,3 +17,10 @@ async def service_dep(session: DBSession) -> PhoneNumberService:
         telegram_user_repo=TelegramUserRepository,
         user_repo=UserRepository
     )
+
+
+class PhoneNumberDependencyFactory(DependencyFactory):
+    def __init__(self):
+        super().__init__(
+            service_dep=service_dep,
+        )
