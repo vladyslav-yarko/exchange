@@ -65,3 +65,6 @@ class PhoneNumberDependencyFactory(DependencyFactory):
             response = IsVerifiedPhoneNumberPublic(**data)
             return response
         return dep
+    
+    
+dependencies = PhoneNumberDependencyFactory()
