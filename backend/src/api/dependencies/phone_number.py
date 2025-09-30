@@ -36,3 +36,21 @@ class PhoneNumberDependencyFactory(DependencyFactory):
             self.set_cookie(response, "phoneNumber", data[1], ValidationEnum.EXPIRE_TIME.value) 
             return PhoneNumberPublic(**data[0])
         return dep
+    
+    def validate_dep(self) -> Callable[[], Awaitable[ValidatePhoneNumberPublic]]:
+        async def dep(
+            response: Response,
+            body: ValidatePhoneNumberBody,
+            user: User = Depends(self.token_dep()),
+            service: PhoneNumberService = Depends(self.service_dep),
+            phoneNumber: Optional[str] = Cookie(None, examples=[None], description="Validation id. (You do not need to pass it). 💫")) -> ValidatePhoneNumberPublic:
+            if not phoneNumber:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Validation id has not found"
+                )
+            data = await service.validate(user.id, phoneNumber, body.model_dump())
+            self.check_for_exception(data)
+            self.delete_cookie(response, phoneNumber)
+            return ValidatePhoneNumberPublic(**data)
+        return dep
