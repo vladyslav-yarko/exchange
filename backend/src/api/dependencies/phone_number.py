@@ -54,3 +54,14 @@ class PhoneNumberDependencyFactory(DependencyFactory):
             self.delete_cookie(response, phoneNumber)
             return ValidatePhoneNumberPublic(**data)
         return dep
+    
+    def is_verified_dep(self) -> Callable[[], Awaitable[IsVerifiedPhoneNumberPublic]]:
+        async def dep(
+            body: IsVerifiedPhoneNumberBody,
+            user: User = Depends(self.token_dep()),
+            service: PhoneNumberService = Depends(self.service_dep)) -> IsVerifiedPhoneNumberPublic:
+            data = await service.is_verified(user.id, body.model_dump())
+            self.check_for_exception(data)
+            response = IsVerifiedPhoneNumberPublic(**data)
+            return response
+        return dep
