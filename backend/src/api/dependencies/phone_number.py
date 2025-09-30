@@ -68,3 +68,8 @@ class PhoneNumberDependencyFactory(DependencyFactory):
     
     
 dependencies = PhoneNumberDependencyFactory()
+
+
+SentPhoneNumber = Annotated[PhoneNumberPublic, Depends(dependencies.send_dep())]
+ValidatedPhoneNumber = Annotated[ValidatePhoneNumberPublic, Depends(dependencies.validate_dep())]
+IsVerifiedPhoneNumber = Annotated[IsVerifiedPhoneNumberPublic, Depends(dependencies.is_verified_dep())]
