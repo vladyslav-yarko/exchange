@@ -12,3 +12,12 @@ from src.services import UserService
 from src.schemas.user import UserBody, UserPublic, UsersPublic, CallbackGoogleBody, CallbackGooglePublic, LoginUserBody, LoginUserPublic, RefreshPublic, UpdateUserBody, LogoutUserPublic
 from src.enums.user import TokenEnum
 from src.models import User as UserModel
+
+
+async def service_dep(session: DBSession) -> UserService:
+    return UserService(
+        session=session,
+        oauth2_client=Oauth2Client(),
+        user_repo=UserRepository,
+        telegram_user_repo=TelegramUserRepository
+    )
