@@ -24,4 +24,12 @@ async def service_dep(session: DBSession) -> UserService:
 
 
 class UserDependencyFactory(DependencyFactory):
-    pass
+    def __init__(self):
+        super().__init__(
+            service_dep=service_dep,
+            SchemaBody=UserBody,
+            SchemaPublic=UserPublic,
+            DataSchemaPublic=UsersPublic,
+            PhoneNumberBody=UpdateUserBody,
+            EmailBody=UpdateUserBody
+        )
