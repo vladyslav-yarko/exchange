@@ -21,3 +21,7 @@ async def service_dep(session: DBSession) -> UserService:
         user_repo=UserRepository,
         telegram_user_repo=TelegramUserRepository
     )
+
+
+class UserDependencyFactory(DependencyFactory):
+    pass
