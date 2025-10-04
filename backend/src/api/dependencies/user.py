@@ -40,3 +40,13 @@ class UserDependencyFactory(DependencyFactory):
         ) -> uuid.UUID:
             return refreshToken
         return dep
+        
+    def get_dep(self) -> Callable[[], Awaitable[UsersPublic]]:
+        async def dep(
+            admin: UserModel = Depends(self.admin_dep()),
+            page: int = Depends(self.page_dep()),
+            service: UserService = Depends(self.service_dep)) -> UsersPublic:
+            data = await service.get(page)
+            response = UsersPublic(**data)
+            return response
+        return dep
