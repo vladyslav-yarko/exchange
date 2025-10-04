@@ -33,3 +33,10 @@ class UserDependencyFactory(DependencyFactory):
             PhoneNumberBody=UpdateUserBody,
             EmailBody=UpdateUserBody
         )
+        
+    def refresh_token_dep(self) -> uuid.UUID:
+        async def dep(
+            refreshToken: Optional[uuid.UUID] = Cookie(None, examples=[None], description="Refresh token id. (You do not need to pass it). 💫")            
+        ) -> uuid.UUID:
+            return refreshToken
+        return dep
