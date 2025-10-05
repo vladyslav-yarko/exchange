@@ -60,3 +60,15 @@ class UserDependencyFactory(DependencyFactory):
             response = UserPublic.model_validate(data, from_attributes=True)
             return response
         return dep
+        
+    def create_one_dep(self) -> Callable[[], Awaitable[UserPublic]]:
+        self.email_schema = UserBody
+        async def dep(
+            body: UserBody,
+            service: UserService = Depends(self.service_dep),
+            email: bool = Depends(self.verified_email_dep())) -> UserPublic:
+            data = await service.create_one(body.model_dump())
+            self.check_for_exception(data)
+            response = UserPublic(**data)
+            return response
+        return dep
