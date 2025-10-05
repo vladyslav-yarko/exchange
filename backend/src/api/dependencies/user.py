@@ -50,3 +50,13 @@ class UserDependencyFactory(DependencyFactory):
             response = UsersPublic(**data)
             return response
         return dep
+        
+    def get_one_dep(self) -> Callable[[], Awaitable[UserPublic]]:
+        async def dep(
+            user: UserModel = Depends(self.token_dep()),
+            service: UserService = Depends(self.service_dep)) -> UserPublic:
+            data = await service.get_one(user.id)
+            self.check_for_exception(data)
+            response = UserPublic.model_validate(data, from_attributes=True)
+            return response
+        return dep
