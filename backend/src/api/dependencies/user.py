@@ -93,3 +93,14 @@ class UserDependencyFactory(DependencyFactory):
             response = UserPublic(**data)
             return response
         return dep
+    
+    def delete_one_dep(self) -> Callable[[], Awaitable[UserPublic]]:
+        async def dep(
+            admin: UserModel = Depends(self.admin_dep()),
+            service: UserService = Depends(self.service_dep),
+            id: int = Path(..., examples=[1], description="Unique identifier of an object. 💫", ge=1)) -> UserPublic:
+            data = await service.delete_one(id)
+            self.check_for_exception(data)
+            response = UserPublic(**data)
+            return response
+        return dep
