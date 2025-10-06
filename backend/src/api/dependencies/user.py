@@ -72,3 +72,24 @@ class UserDependencyFactory(DependencyFactory):
             response = UserPublic(**data)
             return response
         return dep
+
+
+    def update_one_dep(self) -> Callable[[], Awaitable[UserPublic]]:
+        self.email_schema = UpdateUserBody
+        self.phone_number_schema = UpdateUserBody
+        async def dep(
+            body: UpdateUserBody,
+            user: UserModel = Depends(self.token_dep()),
+            service: UserService = Depends(self.service_dep),
+            email: bool = Depends(self.verified_email_dep()),
+            phone_number: bool = Depends(self.verified_phone_number_dep())) -> UserPublic:
+            if user.email != body.email:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="Email is invalid"
+                )
+            data = await service.update_one(user.id, body.model_dump())
+            self.check_for_exception(data)
+            response = UserPublic(**data)
+            return response
+        return dep
