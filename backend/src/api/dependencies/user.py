@@ -104,3 +104,40 @@ class UserDependencyFactory(DependencyFactory):
             response = UserPublic(**data)
             return response
         return dep
+    
+    def google_url_dep(self) -> Callable[[], Awaitable[RedirectResponse]]:
+        async def dep(
+            service: UserService = Depends(self.service_dep),
+            refreshToken: uuid.UUID = Depends(self.refresh_token_dep())
+        ) -> RedirectResponse:
+            if refreshToken:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="User is authenticated. Refresh token has found"
+                )
+            data = await service.google_url()
+            self.check_for_exception(data)
+            response = RedirectResponse(url=data, status_code=status.HTTP_302_FOUND)
+            return response
+        return dep
+<<<<<<< HEAD
+=======
+    
+    def google_callback_dep(self) -> Callable[[], Awaitable[CallbackGooglePublic]]:
+        async def dep(
+            response: Response,
+            body: CallbackGoogleBody,
+            service: UserService = Depends(self.service_dep),
+            refreshToken: uuid.UUID = Depends(self.refresh_token_dep())
+        ) -> CallbackGooglePublic:
+            if refreshToken:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="User is authenticated. Refresh token has found"
+                )
+            data = await service.google_callback(body.model_dump().get("code"))
+            self.check_for_exception(data)
+            self.set_cookie(response, "refreshToken", data.get("tokenId"), TokenEnum.REFRESH_TOKEN_EXP.value)
+            return CallbackGooglePublic(**data.get('user'))
+        return dep
+>>>>>>> 2520ee4 (add google_callback_dep method to UserDependencyFactory class)
