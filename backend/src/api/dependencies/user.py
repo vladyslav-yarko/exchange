@@ -120,8 +120,6 @@ class UserDependencyFactory(DependencyFactory):
             response = RedirectResponse(url=data, status_code=status.HTTP_302_FOUND)
             return response
         return dep
-<<<<<<< HEAD
-=======
     
     def google_callback_dep(self) -> Callable[[], Awaitable[CallbackGooglePublic]]:
         async def dep(
@@ -140,4 +138,3 @@ class UserDependencyFactory(DependencyFactory):
             self.set_cookie(response, "refreshToken", data.get("tokenId"), TokenEnum.REFRESH_TOKEN_EXP.value)
             return CallbackGooglePublic(**data.get('user'))
         return dep
->>>>>>> 2520ee4 (add google_callback_dep method to UserDependencyFactory class)
