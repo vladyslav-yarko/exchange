@@ -138,3 +138,20 @@ class UserDependencyFactory(DependencyFactory):
             self.set_cookie(response, "refreshToken", data.get("tokenId"), TokenEnum.REFRESH_TOKEN_EXP.value)
             return CallbackGooglePublic(**data.get('user'))
         return dep
+    
+    def login_user_dep(self) -> Callable[[], Awaitable[LoginUserPublic]]:
+        async def dep(
+            response: Response,
+            body: LoginUserBody,
+            service: UserService = Depends(self.service_dep),
+            refreshToken: uuid.UUID = Depends(self.refresh_token_dep())) -> LoginUserPublic:
+            if refreshToken:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="User is authenticated. Refresh token has found"
+                )
+            data = await service.login_user(body.model_dump())
+            self.check_for_exception(data)
+            self.set_cookie(response, "refreshToken", data.get("tokenId"), TokenEnum.REFRESH_TOKEN_EXP.value)
+            return LoginUserPublic.model_validate(data.get('user'), from_attributes=True)
+        return dep
