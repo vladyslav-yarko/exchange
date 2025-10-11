@@ -155,3 +155,20 @@ class UserDependencyFactory(DependencyFactory):
             self.set_cookie(response, "refreshToken", data.get("tokenId"), TokenEnum.REFRESH_TOKEN_EXP.value)
             return LoginUserPublic.model_validate(data.get('user'), from_attributes=True)
         return dep
+    
+    def logout_user_dep(self) -> Callable[[], Awaitable[Union[UserPublic, LogoutUserPublic]]]:
+        async def dep(
+            response: Response,
+            service: UserService = Depends(self.service_dep),
+            refresh_token: uuid.UUID = Depends(self.refresh_token_dep())
+            ) -> UserPublic:
+            if not refresh_token:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="User is not authorized. Refresh token has not found"
+                )
+            data = await service.logout_user(str(refresh_token))
+            self.check_for_exception(data)
+            self.delete_cookie(response, "refreshToken")
+            return UserPublic(**data) if data else LogoutUserPublic(message="OK")
+        return dep
