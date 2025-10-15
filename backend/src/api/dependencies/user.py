@@ -189,3 +189,7 @@ class UserDependencyFactory(DependencyFactory):
             self.set_cookie(response, "refreshToken", data.get("tokenId"), data.get("exp"))
             return RefreshPublic(accessToken=data.get("accessToken"))
         return dep
+
+
+dependencies = UserDependencyFactory()
+
