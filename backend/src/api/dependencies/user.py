@@ -193,3 +193,10 @@ class UserDependencyFactory(DependencyFactory):
 
 dependencies = UserDependencyFactory()
 
+
+# CRUDs
+Users = Annotated[UsersPublic, Depends(dependencies.get_dep())]
+User = Annotated[UserPublic, Depends(dependencies.get_one_dep())]
+CreatedUser = Annotated[UserPublic, Depends(dependencies.create_one_dep())]
+UpdatedUser = Annotated[UserPublic, Depends(dependencies.update_one_dep())]
+DeletedUser = Annotated[UserPublic, Depends(dependencies.delete_one_dep())]
