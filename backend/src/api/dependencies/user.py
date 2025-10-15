@@ -200,3 +200,11 @@ User = Annotated[UserPublic, Depends(dependencies.get_one_dep())]
 CreatedUser = Annotated[UserPublic, Depends(dependencies.create_one_dep())]
 UpdatedUser = Annotated[UserPublic, Depends(dependencies.update_one_dep())]
 DeletedUser = Annotated[UserPublic, Depends(dependencies.delete_one_dep())]
+
+# Authentication
+# Cannot do like this
+# GoogleUrl = Annotated[RedirectResponse, Depends(dependencies.google_url_dep())]
+GoogleLoggedInUser = Annotated[CallbackGooglePublic, Depends(dependencies.google_callback_dep())]
+LoggedInUser = Annotated[UsersPublic, Depends(dependencies.login_user_dep())]
+LoggedOutUser = Annotated[UserPublic, Depends(dependencies.logout_user_dep())]
+RefreshedToken = Annotated[RefreshPublic, Depends(dependencies.refresh_user_dep())]
