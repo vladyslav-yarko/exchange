@@ -10,3 +10,13 @@ from src.services import CurrencyService
 from src.schemas.currency import CurrencyBody, CurrencyPublic, CurrenciesPublic, CurrencySubscribeBody, CurrencySubscribePublic, CurrencySubscribesPublic, CurrencyPricePublic, CurrencyPriceBody
 from src.models import User
 from src.utils.validation import check_upper_case
+
+
+async def service_dep(session: DBSession) -> CurrencyService:
+    return CurrencyService(
+        session=session,
+        currency_client=CurrencyClient(),
+        currency_repo=CurrencyRepository,
+        currency_subscribes_repo=CurrencySubscribeRepository,
+        user_repo=UserRepository
+    )
