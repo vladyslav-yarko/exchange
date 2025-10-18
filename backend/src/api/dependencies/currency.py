@@ -20,3 +20,7 @@ async def service_dep(session: DBSession) -> CurrencyService:
         currency_subscribes_repo=CurrencySubscribeRepository,
         user_repo=UserRepository
     )
+
+
+class CurrencyDependencyFactory(DependencyFactory):
+    pass
