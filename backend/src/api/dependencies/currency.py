@@ -30,3 +30,17 @@ class CurrencyDependencyFactory(DependencyFactory):
             SchemaPublic=CurrencyPublic,
             DataSchemaPublic=CurrenciesPublic
         )
+        
+    def symbol_dep(self) -> Callable[[], Awaitable[str]]:
+        async def dep(
+            symbol: str = Path(..., examples=["USDUAH"], min_length=2, max_length=50, description="Unique symbol combination. 💫")
+            ) -> str:
+            try:
+                check_upper_case(symbol)
+            except ValueError:
+                raise HTTPException(
+                    status_code=422,
+                    detail="Symbol must be in upper case"
+                )
+            return symbol
+        return dep
