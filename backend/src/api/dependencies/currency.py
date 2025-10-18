@@ -44,3 +44,14 @@ class CurrencyDependencyFactory(DependencyFactory):
                 )
             return symbol
         return dep
+    
+    def get_price_dep(self) -> Callable[[], Awaitable[CurrencyPricePublic]]:
+        async def dep(
+            body: CurrencyPriceBody,
+            user: User = Depends(self.token_dep()),
+            service: CurrencyService = Depends(self.service_dep)) -> CurrencyPricePublic:
+            data = await service.get_price(body.model_dump())
+            self.check_for_exception(data)
+            response = CurrencyPricePublic(**data)
+            return response
+        return dep
