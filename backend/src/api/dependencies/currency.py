@@ -23,4 +23,10 @@ async def service_dep(session: DBSession) -> CurrencyService:
 
 
 class CurrencyDependencyFactory(DependencyFactory):
-    pass
+    def __init__(self):
+        super().__init__(
+            service_dep=service_dep,
+            SchemaBody=CurrencyBody,
+            SchemaPublic=CurrencyPublic,
+            DataSchemaPublic=CurrenciesPublic
+        )
