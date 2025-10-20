@@ -55,3 +55,13 @@ class CurrencyDependencyFactory(DependencyFactory):
             response = CurrencyPricePublic(**data)
             return response
         return dep
+        
+    def subscribe_get_dep(self) -> Callable[[], Awaitable[CurrencySubscribesPublic]]:
+        async def dep(
+            user: User = Depends(self.token_dep()),
+            page: int = Depends(self.page_dep()),
+            service: CurrencyService = Depends(self.service_dep)) -> CurrencySubscribesPublic:
+            data = await service.subscribes_get(user.id, page)
+            response = CurrencySubscribesPublic(**data)
+            return response
+        return dep
