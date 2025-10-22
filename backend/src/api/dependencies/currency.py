@@ -76,3 +76,14 @@ class CurrencyDependencyFactory(DependencyFactory):
             response = CurrencySubscribePublic(**data)
             return response
         return dep
+        
+    def subscribe_create_one_dep(self) -> Callable[[], Awaitable[CurrencySubscribePublic]]:
+        async def dep(
+            body: CurrencyBody,
+            user: User = Depends(self.token_dep()),
+            service: CurrencyService = Depends(self.service_dep)) -> CurrencySubscribeBody:
+            data = await service.subscribe_create_one(user.id, body.model_dump())
+            self.check_for_exception(data)
+            response = CurrencySubscribePublic(**data)
+            return response
+        return dep
