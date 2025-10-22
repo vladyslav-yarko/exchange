@@ -99,3 +99,14 @@ class CurrencyDependencyFactory(DependencyFactory):
             response = CurrencySubscribePublic(**data)
             return response
         return dep
+    
+    def subscribe_delete_one_dep(self) -> Callable[[], Awaitable[CurrencySubscribePublic]]:
+        async def dep(
+            user: User = Depends(self.token_dep()),
+            service: CurrencyService = Depends(self.service_dep),
+            symbol: str = Depends(self.symbol_dep())) -> CurrencySubscribeBody:
+            data = await service.subscribe_delete_one(user.id, symbol)
+            self.check_for_exception(data)
+            response = CurrencySubscribePublic(**data)
+            return response
+        return dep
