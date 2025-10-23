@@ -126,3 +126,10 @@ CreatedCurrency = Annotated[CurrencyPublic, Depends(dependencies.create_one_dep(
 UpdatedCurrency = Annotated[CurrencyPublic, Depends(dependencies.update_one_dep())]
 DeletedCurrency = Annotated[CurrencyPublic, Depends(dependencies.delete_one_dep())]
 
+# Subscribe CRUDs
+
+CurrencySubscribes = Annotated[CurrencySubscribesPublic, Depends(dependencies.subscribe_get_dep())]
+CurrencySubscribe = Annotated[CurrencySubscribePublic, Depends(dependencies.subscribe_get_one_dep())]
+CreatedCurrencySubscribe = Annotated[CurrencySubscribePublic, Depends(dependencies.subscribe_create_one_dep())]
+UpdatedCurrencySubscribe = Annotated[CurrencySubscribePublic, Depends(dependencies.subscribe_update_one_dep())]
+DeletedCurrencySubscribe = Annotated[CurrencySubscribePublic, Depends(dependencies.subscribe_delete_one_dep())]
