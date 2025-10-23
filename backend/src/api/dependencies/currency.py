@@ -114,3 +114,8 @@ class CurrencyDependencyFactory(DependencyFactory):
         
 dependencies = CurrencyDependencyFactory()
 
+
+# Prices
+
+CurrencyPrice = Annotated[CurrencyPricePublic, Depends(dependencies.get_price_dep())]
+
