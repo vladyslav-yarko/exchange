@@ -119,3 +119,10 @@ dependencies = CurrencyDependencyFactory()
 
 CurrencyPrice = Annotated[CurrencyPricePublic, Depends(dependencies.get_price_dep())]
 
+# CRUDs
+Currencies = Annotated[CurrenciesPublic, Depends(dependencies.get_dep())]
+Currency = Annotated[CurrencyPublic, Depends(dependencies.get_one_dep())]
+CreatedCurrency = Annotated[CurrencyPublic, Depends(dependencies.create_one_dep())]
+UpdatedCurrency = Annotated[CurrencyPublic, Depends(dependencies.update_one_dep())]
+DeletedCurrency = Annotated[CurrencyPublic, Depends(dependencies.delete_one_dep())]
+
