@@ -110,3 +110,7 @@ class CurrencyDependencyFactory(DependencyFactory):
             response = CurrencySubscribePublic(**data)
             return response
         return dep
+        
+        
+dependencies = CurrencyDependencyFactory()
+
