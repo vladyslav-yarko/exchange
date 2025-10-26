@@ -23,4 +23,10 @@ async def service_dep(session: DBSession) -> CryptoService:
 
 
 class CryptoDependencyFactory(DependencyFactory):
-    pass
+    def __init__(self):
+        super().__init__(
+            service_dep=service_dep,
+            SchemaBody=CryptoBody,
+            SchemaPublic=CryptoPublic,
+            DataSchemaPublic=CryptoSPublic
+        )
