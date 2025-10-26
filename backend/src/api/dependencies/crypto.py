@@ -20,3 +20,7 @@ async def service_dep(session: DBSession) -> CryptoService:
         crypto_subscribes_repo=CryptoSubscribeRepository,
         user_repo=UserRepository
     )
+
+
+class CryptoDependencyFactory(DependencyFactory):
+    pass
