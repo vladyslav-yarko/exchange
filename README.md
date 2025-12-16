@@ -1,5 +1,43 @@
 # Exchange V2
 
+# 🌍 Real-Time Currency & Crypto Price Tracker
+
+This project is a real-time price tracking platform for **global fiat currencies** and **cryptocurrencies**.  
+It allows users to monitor up-to-date exchange rates and crypto prices through integrations with multiple external APIs.
+
+## ✨ Features
+
+- 📊 Real-time prices for **world currencies**
+- ₿ Live tracking of **cryptocurrencies**
+- 🔌 Integration with third-party APIs  
+  - Binance API for cryptocurrency prices
+- 🔐 Secure authentication using **OAuth 2.0**
+- 🔑 Google API integration (Google OAuth)
+- 📧 SMTP-based email verification  
+  *(frontend implementation is still in progress)*
+
+## 🛠 Tech Stack
+
+### Backend
+- **Python**
+- **FastAPI**
+- OAuth 2.0 authentication
+- SMTP email service
+
+### Frontend
+- **JavaScript**
+- **React.js**
+
+## 🚧 Project Status
+
+- Backend functionality is implemented
+- Frontend is partially completed
+- Email verification logic exists, UI is not finished yet
+
+## 🎯 Goal
+
+The main goal of this project is to provide a **fast, secure, and scalable** solution for tracking currency and cryptocurrency prices in real time using modern web technologies.
+
 ---
 
 ## 🚀 Launch
@@ -114,3 +152,4 @@
 ---
 
 # Great job! Enjoy!
+
