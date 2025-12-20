@@ -135,21 +135,8 @@ The main goal of this project is to provide a **fast, secure, and scalable** sol
 8. **Backend logs checking**      
    - In **logs** folder you will find logs file for backend
 
-9.  **Frontend setup**
-   - You need to open another shell and change directory to **frontend**
-   - Make sure that you have node installed
-   - After you can use following commands
-    ```
-    cd frontend
-    ```
-    ```
-    npm install
-    ```
-    ```
-    npm run dev
-    ```
-
 ---
 
 # Great job! Enjoy!
+
 
