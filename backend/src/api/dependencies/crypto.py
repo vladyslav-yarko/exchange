@@ -76,3 +76,14 @@ class CryptoDependencyFactory(DependencyFactory):
             response = CryptoSubscribePublic(**data)
             return response
         return dep
+
+    def subscribe_create_one_dep(self) -> Callable[[], Awaitable[CryptoSubscribePublic]]:
+        async def dep(
+            body: CryptoBody,
+            user: User = Depends(self.token_dep()),
+            service: CryptoService = Depends(self.service_dep)) -> CryptoSubscribeBody:
+            data = await service.subscribe_create_one(user.id, body.model_dump())
+            self.check_for_exception(data)
+            response = CryptoSubscribePublic(**data)
+            return response
+        return dep
