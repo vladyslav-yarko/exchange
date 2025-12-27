@@ -119,3 +119,10 @@ dependencies = CryptoDependencyFactory()
 # Prices
 
 CryptoPrice = Annotated[CryptoPricePublic, Depends(dependencies.get_price_dep())]
+
+# CRUDs
+CryptoS = Annotated[CryptoSPublic, Depends(dependencies.get_dep())]
+Crypto = Annotated[CryptoPublic, Depends(dependencies.get_one_dep())]
+CreatedCrypto = Annotated[CryptoPublic, Depends(dependencies.create_one_dep())]
+UpdatedCrypto = Annotated[CryptoPublic, Depends(dependencies.update_one_dep())]
+DeletedCrypto = Annotated[CryptoPublic, Depends(dependencies.delete_one_dep())]
