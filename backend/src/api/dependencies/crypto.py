@@ -44,3 +44,14 @@ class CryptoDependencyFactory(DependencyFactory):
                 )
             return symbol
         return dep
+
+    def get_price_dep(self) -> Callable[[], Awaitable[CryptoPricePublic]]:
+        async def dep(
+            body: CryptoPriceBody,
+            user: User = Depends(self.token_dep()),
+            service: CryptoService = Depends(self.service_dep)) -> CryptoPricePublic:
+            data = await service.get_price(body.model_dump())
+            self.check_for_exception(data)
+            response = CryptoPricePublic(**data)
+            return response
+        return dep
