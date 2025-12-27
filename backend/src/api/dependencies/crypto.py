@@ -111,3 +111,11 @@ class CryptoDependencyFactory(DependencyFactory):
             response = CryptoSubscribePublic(**data)
             return response
         return dep
+
+
+dependencies = CryptoDependencyFactory()
+
+
+# Prices
+
+CryptoPrice = Annotated[CryptoPricePublic, Depends(dependencies.get_price_dep())]
