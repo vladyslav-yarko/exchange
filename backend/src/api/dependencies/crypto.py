@@ -126,3 +126,11 @@ Crypto = Annotated[CryptoPublic, Depends(dependencies.get_one_dep())]
 CreatedCrypto = Annotated[CryptoPublic, Depends(dependencies.create_one_dep())]
 UpdatedCrypto = Annotated[CryptoPublic, Depends(dependencies.update_one_dep())]
 DeletedCrypto = Annotated[CryptoPublic, Depends(dependencies.delete_one_dep())]
+
+# Subscribe CRUDs
+
+CryptoSubscribes = Annotated[CryptoSubscribesPublic, Depends(dependencies.subscribe_get_dep())]
+CryptoSubscribe = Annotated[CryptoSubscribePublic, Depends(dependencies.subscribe_get_one_dep())]
+CreatedCryptoSubscribe = Annotated[CryptoSubscribePublic, Depends(dependencies.subscribe_create_one_dep())]
+UpdatedCryptoSubscribe = Annotated[CryptoSubscribePublic, Depends(dependencies.subscribe_update_one_dep())]
+DeletedCryptoSubscribe = Annotated[CryptoSubscribePublic, Depends(dependencies.subscribe_delete_one_dep())]
