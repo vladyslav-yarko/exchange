@@ -30,7 +30,7 @@ class CryptoDependencyFactory(DependencyFactory):
             SchemaPublic=CryptoPublic,
             DataSchemaPublic=CryptoSPublic
         )
-        
+
     def symbol_dep(self) -> Callable[[], Awaitable[str]]:
         async def dep(
             symbol: str = Path(..., examples=["BTCUSDT"], min_length=2, max_length=50, description="Unique symbol combination. 💫")
@@ -65,7 +65,7 @@ class CryptoDependencyFactory(DependencyFactory):
             response = CryptoSubscribesPublic(**data)
             return response
         return dep
-    
+
     def subscribe_get_one_dep(self) -> Callable[[], Awaitable[CryptoSubscribePublic]]:
         async def dep(
             user: User = Depends(self.token_dep()),
