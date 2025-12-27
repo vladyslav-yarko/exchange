@@ -100,3 +100,14 @@ class CryptoDependencyFactory(DependencyFactory):
             response = CryptoSubscribePublic(**data)
             return response
         return dep
+
+    def subscribe_delete_one_dep(self) -> Callable[[], Awaitable[CryptoSubscribePublic]]:
+        async def dep(
+            user: User = Depends(self.token_dep()),
+            service: CryptoService = Depends(self.service_dep),
+            symbol: str = Depends(self.symbol_dep())) -> CryptoSubscribeBody:
+            data = await service.subscribe_delete_one(user.id, symbol)
+            self.check_for_exception(data)
+            response = CryptoSubscribePublic(**data)
+            return response
+        return dep
